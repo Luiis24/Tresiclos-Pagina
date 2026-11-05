@@ -1,3 +1,23 @@
+/* ===================== TEMA ===================== */
+const themeToggle = document.getElementById('themeToggle');
+const themeMeta = document.querySelector('meta[name="theme-color"]');
+
+function syncThemeButton(theme) {
+  const dark = theme === 'dark';
+  themeToggle.setAttribute('aria-pressed', String(dark));
+  themeToggle.setAttribute('aria-label', dark ? 'Activar modo claro' : 'Activar modo oscuro');
+  if (themeMeta) themeMeta.setAttribute('content', dark ? '#1D2142' : '#FFFFFF');
+}
+
+syncThemeButton(document.documentElement.getAttribute('data-theme') || 'light');
+
+themeToggle.addEventListener('click', () => {
+  const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  try { localStorage.setItem('tresiclos-theme', next); } catch (e) {}
+  syncThemeButton(next);
+});
+
 /* ===================== MENÚ MÓVIL ===================== */
 const menuToggle = document.getElementById('menuToggle');
 const navLinks = document.getElementById('navLinks');
@@ -29,16 +49,19 @@ form.addEventListener('submit', (e) => {
   const message = form.message.value.trim();
   if (!name || !email || !message) {
     status.textContent = 'Por favor completa nombre, email y mensaje.';
-    status.style.color = '#FCA5A5';
+    status.classList.add('is-error');
+    status.classList.remove('is-ok');
     return;
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     status.textContent = 'Ingresa un email válido.';
-    status.style.color = '#FCA5A5';
+    status.classList.add('is-error');
+    status.classList.remove('is-ok');
     return;
   }
   status.textContent = '¡Gracias! Te contactaremos pronto. (Demo: no se envía a servidor)';
-  status.style.color = '#34D399';
+  status.classList.add('is-ok');
+  status.classList.remove('is-error');
   form.reset();
 });
 
